@@ -2,7 +2,7 @@ package com.dfs.dfsmasterserver.service;
 
 import com.dfs.dfsmasterserver.model.AppUser;
 import com.dfs.dfsmasterserver.model.Role;
-import com.dfs.dfsmasterserver.repo.AppUserRepo;
+import com.dfs.dfsmasterserver.repo.UserRepo;
 import com.dfs.dfsmasterserver.repo.RoleRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +15,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j // for logging
-public class AppUserServiceImpl implements AppUserService{
+public class UserServiceImpl implements UserService {
 
-    private final AppUserRepo appUserRepo;
+    private final UserRepo userRepo;
     private final RoleRepo roleRepo;
     @Override
     public AppUser saveUser(AppUser user) {
         log.info("Saving new user {} to database", user.getName());
-        return appUserRepo.save(user);
+        return userRepo.save(user);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class AppUserServiceImpl implements AppUserService{
     @Override
     public void addRoleToUser(String username, String roleName) {
         log.info("Adding role {} to user {}", username, roleName);
-        AppUser user = appUserRepo.findByUsername(username);
+        AppUser user = userRepo.findByUsername(username);
         Role role = roleRepo.findByName(roleName);
         user.getRoles().add(role);
     }
@@ -42,12 +42,12 @@ public class AppUserServiceImpl implements AppUserService{
     @Override
     public AppUser getUser(String username) {
         log.info("Getting user {}", username);
-        return appUserRepo.findByUsername(username);
+        return userRepo.findByUsername(username);
     }
 
     @Override
     public List<AppUser> getUsers() {
         log.info("Fetching all users");
-        return appUserRepo.findAll();
+        return userRepo.findAll();
     }
 }

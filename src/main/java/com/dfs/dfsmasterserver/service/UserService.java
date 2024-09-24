@@ -5,7 +5,7 @@ import com.dfs.dfsmasterserver.model.Role;
 
 import java.util.List;
 
-public interface AppUserService {
+public interface UserService {
     AppUser saveUser(AppUser user);
     Role saveRole(Role role);
     void addRoleToUser(String username, String roleName);
