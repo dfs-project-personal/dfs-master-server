@@ -19,6 +19,7 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    // username will be the email of the user from the frontend
     private String username;
     private String password;
     // Need to fetch all the corresponding roles when I fetch the User
