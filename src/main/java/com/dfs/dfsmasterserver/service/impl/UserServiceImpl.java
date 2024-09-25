@@ -1,12 +1,17 @@
-package com.dfs.dfsmasterserver.service;
+package com.dfs.dfsmasterserver.service.impl;
 
 import com.dfs.dfsmasterserver.model.AppUser;
 import com.dfs.dfsmasterserver.model.Role;
+import com.dfs.dfsmasterserver.model.UserPrincipal;
 import com.dfs.dfsmasterserver.repo.UserRepo;
 import com.dfs.dfsmasterserver.repo.RoleRepo;
+import com.dfs.dfsmasterserver.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,14 +20,23 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j // for logging
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
+
     @Override
-    public AppUser saveUser(AppUser user) {
-        log.info("Saving new user {} to database", user.getName());
-        return userRepo.save(user);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        AppUser user = userRepo.findByUsername(username);
+
+        if (user == null) {
+            log.error("User not found");
+            throw new UsernameNotFoundException("User not found");
+        } else {
+            log.info("User {} found", username);
+        }
+
+        return new UserPrincipal(user);
     }
 
     @Override
