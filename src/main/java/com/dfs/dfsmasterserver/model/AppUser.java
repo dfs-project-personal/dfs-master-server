@@ -3,6 +3,7 @@ package com.dfs.dfsmasterserver.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.Collection;
 // this class cannot be named as User as spring security has a class called User.
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppUser {

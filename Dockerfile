@@ -1,5 +1,5 @@
 # Use OpenJDK 21 as the base image
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:21-jdk-alpine AS builder
 
 # Set the working directory in the container
 WORKDIR /app
@@ -8,15 +8,24 @@ WORKDIR /app
 COPY mvnw .
 COPY .mvn .mvn
 
-# Copy the project files
+# Copy the pom.xml and download dependencies
 COPY pom.xml .
+RUN ./mvnw dependency:go-offline
+
+# Copy the project source
 COPY src src
 
-# Build the application
-RUN ./mvnw package -DskipTests
+# Build the application inside the container
+RUN ./mvnw clean package -DskipTests
 
-# Extract the built JAR file
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+# Package the application
+FROM eclipse-temurin:21-jdk-alpine
 
-# Set the startup command to execute the application
-ENTRYPOINT ["java", "-cp", "target/dependency:target/dependency/*:target/dependency/BOOT-INF/classes", "com.dfs.dfsmasterserver.DfsMasterServerApplication"]
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the JAR file from the builder stage to the new image
+COPY --from=builder /app/target/*.jar app.jar
+
+# Set the ENTRYPOINT command to run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

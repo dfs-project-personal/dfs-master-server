@@ -8,6 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class DfsMasterServerApplication {
 
     // This method is used to insert some data into the database when the application starts
     @Bean
+    @Profile("!test")
     CommandLineRunner run(UserService userService, AuthService authService) {
         return args -> {
             userService.saveRole(new Role(null, "USER"));
