@@ -19,4 +19,4 @@ RUN ./mvnw package -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 # Set the startup command to execute the application
-ENTRYPOINT ["java", "-cp", "app:app/lib/*", "com.dfs.dfsmasterserver.DfsMasterServerApplication"]
+ENTRYPOINT ["java", "-cp", "target/dependency:target/dependency/*:target/dependency/BOOT-INF/classes", "com.dfs.dfsmasterserver.DfsMasterServerApplication"]
