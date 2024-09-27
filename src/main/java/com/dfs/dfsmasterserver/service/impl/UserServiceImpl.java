@@ -1,5 +1,7 @@
 package com.dfs.dfsmasterserver.service.impl;
 
+import com.dfs.dfsmasterserver.exceptions.DataAccessException;
+import com.dfs.dfsmasterserver.exceptions.ResourceNotFoundException;
 import com.dfs.dfsmasterserver.model.AppUser;
 import com.dfs.dfsmasterserver.model.Role;
 import com.dfs.dfsmasterserver.model.UserPrincipal;
@@ -14,8 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -27,11 +27,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         AppUser user = userRepo.findByUsername(username);
 
         if (user == null) {
             log.error("User not found");
-            throw new UsernameNotFoundException("User not found");
+            throw new ResourceNotFoundException("User not found");
         } else {
             log.info("User {} found", username);
         }
@@ -42,26 +43,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Role saveRole(Role role) {
         log.info("Saving new role {} to the database", role.getName());
-        return roleRepo.save(role);
+        try {
+            return roleRepo.save(role);
+        } catch (Exception e) {
+            log.error("Failed to save role {} to the database", role.getName());
+            throw new DataAccessException("Failed to save role to the database");
+        }
+
     }
 
     @Override
     public void addRoleToUser(String username, String roleName) {
         log.info("Adding role {} to user {}", username, roleName);
-        AppUser user = userRepo.findByUsername(username);
-        Role role = roleRepo.findByName(roleName);
-        user.getRoles().add(role);
-    }
-
-    @Override
-    public AppUser getUser(String username) {
-        log.info("Getting user {}", username);
-        return userRepo.findByUsername(username);
-    }
-
-    @Override
-    public List<AppUser> getUsers() {
-        log.info("Fetching all users");
-        return userRepo.findAll();
+        try {
+            AppUser user = userRepo.findByUsername(username);
+            Role role = roleRepo.findByName(roleName);
+            if (user == null || role == null) {
+                log.error("User {} not found", username);
+                throw new ResourceNotFoundException("User not found");
+            }
+            user.getRoles().add(role);
+        } catch (Exception e) {
+            log.error("Failed to add role {} to user {}", roleName, username);
+            throw new DataAccessException("Failed to add role to user");
+        }
     }
 }

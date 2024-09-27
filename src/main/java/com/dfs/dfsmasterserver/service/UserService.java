@@ -8,6 +8,4 @@ import java.util.List;
 public interface UserService {
     Role saveRole(Role role);
     void addRoleToUser(String username, String roleName);
-    AppUser getUser(String username);
-    List<AppUser> getUsers();
 }

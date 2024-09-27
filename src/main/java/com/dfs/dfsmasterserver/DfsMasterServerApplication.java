@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.ArrayList;
 
@@ -26,17 +27,17 @@ public class DfsMasterServerApplication {
             userService.saveRole(new Role(null, "ADMIN"));
             userService.saveRole(new Role(null, "SUPER_ADMIN"));
 
-            authService.register(new AppUser(null, "Akash Tharuka", "akashtharuka", "a@123", new ArrayList<>()));
-            authService.register(new AppUser(null, "Dilshan", "dilshan", "d@123", new ArrayList<>()));
-            authService.register(new AppUser(null, "Kasun", "kasun", "k@123", new ArrayList<>()));
-            authService.register(new AppUser(null, "Nipuna", "nipuna", "n@123", new ArrayList<>()));
+            authService.register(new AppUser(null, "Akash", "Tharuka", "akash@email.com", "Akash@123", new ArrayList<>()));
+            authService.register(new AppUser(null, "Dilshan", "Perera", "dilshan@email.com", "Dilshan@123", new ArrayList<>()));
+            authService.register(new AppUser(null, "Kasun", "Lakshan", "kasun@email.com", "Kasun@123", new ArrayList<>()));
+            authService.register(new AppUser(null, "Nipun", "Iranga", "nipun@email.com", "Nipun@123", new ArrayList<>()));
 
-            userService.addRoleToUser("akashtharuka", "SUPER_ADMIN");
-            userService.addRoleToUser("akashtharuka", "USER");
-            userService.addRoleToUser("dilshan", "USER");
-            userService.addRoleToUser("dilshan", "ADMIN");
-            userService.addRoleToUser("kasun", "USER");
-            userService.addRoleToUser("nipuna", "USER");
+            userService.addRoleToUser("akash@email.com", "SUPER_ADMIN");
+            userService.addRoleToUser("akash@email.com", "USER");
+            userService.addRoleToUser("dilshan@email.com", "USER");
+            userService.addRoleToUser("dilshan@email.com", "ADMIN");
+            userService.addRoleToUser("kasun@email.com", "USER");
+            userService.addRoleToUser("nipun@email.com", "USER");
         };
     }
 
